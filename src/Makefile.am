@@ -4,12 +4,13 @@ AM_CFLAGS = -O0 \
             -g3 \
             -Wall
 
-bin_PROGRAMS = mastermingGA
+bin_PROGRAMS = mastermindGA
 
-mastermingGA_SOURCES = main.c \
+mastermindGA_SOURCES = main.c \
 			   ga.c ga.h \
+			   game.c game.h \
 			   consts.h 
 
-mastermingGA_LDFLAGS =
-mastermingGA_LDADD =
+mastermindGA_LDFLAGS =
+mastermindGA_LDADD =
 
