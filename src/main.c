@@ -3,20 +3,14 @@
 #include <time.h>
 
 #include "game.h"
+#include "ga.h"
 
 int main(int argc, char *argv[])
 {
 	int i,j;
 	game_board game;
-	game_error_t game_error;
 
-	game_error = initialize_board(&game);
-	if(game_error != game_success)
-	{
-		fprintf(stderr, "Got an error on the game: %d\n",game_error);
-		print_game_error(game_error);
-		return EXIT_FAILURE;
-	}
+	GAME_CHECK(initialize_board(&game));
 	unsigned int guess[QTD_ANSWER];
 	unsigned int peg_results[QTD_ANSWER];
 	unsigned int hits = 0;
@@ -25,13 +19,7 @@ int main(int argc, char *argv[])
 		hits = 0;
 		fprintf(stdout,"%d >", i);
 		fscanf(stdin, "%d %d %d %d", &guess[0], &guess[1], &guess[2], &guess[3]);
-		game_error = add_guess(&game, guess, peg_results);
-		if(game_error != game_success)
-		{
-			fprintf(stderr, "Got an error on the game: %d\n",game_error);
-			print_game_error(game_error);
-			return EXIT_FAILURE;
-		}
+		GAME_CHECK(add_guess(&game, guess, peg_results));
 		fprintf(stdout,"   ");
 		for(j=0;j<QTD_ANSWER;j++)
 		{

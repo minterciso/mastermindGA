@@ -1,7 +1,20 @@
 #ifndef __GAME_H
 #define __GAME_H
 
+#include <stdlib.h>
 #include "consts.h"
+
+#define GAME_CHECK(call)							\
+{										\
+	game_error_t error=call;						\
+	if(error != game_success)						\
+	{									\
+		fprintf(stderr, "Error: %s: %d\n",__FILE__,__LINE__);		\
+		fprintf(stderr, "Code: %d\n", error);				\
+		print_game_error(error);					\
+		exit(EXIT_FAILURE);						\
+	}									\
+}
 
 typedef struct{
 	unsigned int secret[QTD_ANSWER];
