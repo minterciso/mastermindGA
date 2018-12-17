@@ -24,3 +24,23 @@ individual* create_population(void)
                 pop[i].strategy[j][k] = rand() % QTD_PEGS;
     return pop;
 }
+
+void fitness(individual *pop)
+{
+    int i,j,k;
+    float fitness = 0.0;
+    float sumFitness = 0.0;
+    for(i=0;i<POP_SIZE;i++)
+    {
+        fitness = 0.0;
+        for(j=0;j<MAX_MOVES;j++)
+            for(k=0;k<QTD_ANSWER;k++)
+                fitness += (float)pop[i].results[j][k];
+        fitness /= pop[i].moves;
+        pop[i].fitness = fitness;
+        sumFitness += fitness;
+    }
+    // Now normalize
+    for(i=0;i<POP_SIZE;i++)
+        pop[i].fitness = pop[i].fitness/sumFitness;
+}

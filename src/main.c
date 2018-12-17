@@ -1,10 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <time.h>
+#include <string.h>
 
 #include "game.h"
 #include "ga.h"
+
+static int cmpind(const void *p1, const void *p2)
+{
+    individual *s1 = (individual*)p1;
+    individual *s2 = (individual*)p2;
+    if(s1->fitness < s2->fitness)
+        return 1;
+    return 0;
+}
 
 int main(int argc, char *argv[])
 {
@@ -33,6 +42,7 @@ int main(int argc, char *argv[])
                 fprintf(stdout,"%d", guess[k]);
 
             GAME_CHECK(add_guess(&game,guess,peg_results));
+            memcpy(pop[i].results[j], &peg_results, sizeof(unsigned int)*QTD_ANSWER);
             fprintf(stdout,"(");
             for(k=0;k<QTD_ANSWER;k++)
             {
@@ -43,17 +53,23 @@ int main(int argc, char *argv[])
             fprintf(stdout,")");
             if(hits==QTD_ANSWER)
             {
+                pop[i].moves = j;
                 fprintf(stdout,"Found in %d moves. [",j);
                 for(k=0;k<QTD_ANSWER;k++)
                     fprintf(stdout,"%d ",game.secret[k]);
                 fprintf(stdout,"]\n");
                 break;
             }
+            pop[i].moves = j;
             fprintf(stdout,"\n");
         }
         fprintf(stdout,"\n");
         GAME_CHECK(reset_guesses(&game));
     }
+    fitness(pop);
+    qsort(pop,POP_SIZE, sizeof(individual), cmpind);
+    for(i=0;i<POP_SIZE;i++)
+        fprintf(stdout,"Individual %d: %f\n",i, pop[i].fitness);
     if(pop != NULL)
         free(pop);
     return EXIT_SUCCESS;
