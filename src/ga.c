@@ -18,7 +18,6 @@ individual* create_population(void)
 		return NULL;
 	}
 	memset(pop, '\0', pop_bytes);
-	srand(time(NULL));
 	for(i=0;i<POP_SIZE;i++)
 		for(j=0;j<MAX_MOVES;j++)
 			for(k=0;k<QTD_ANSWER;k++)

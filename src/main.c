@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <time.h>
 
 #include "game.h"
@@ -7,47 +8,53 @@
 
 int main(int argc, char *argv[])
 {
-	int i,j;
+	int i,j,k;
 	game_board game;
+	individual *pop = NULL;
 
+	srand(time(NULL));
+	pop = create_population();
 	GAME_CHECK(initialize_board(&game));
-	unsigned int guess[QTD_ANSWER];
-	unsigned int peg_results[QTD_ANSWER];
 	unsigned int hits = 0;
-	for(i=0;i<MAX_MOVES;i++)
+	unsigned int peg_results[QTD_ANSWER];
+	unsigned int *guess = NULL;
+	fprintf(stdout,"Secret: ");
+	for(k=0;k<QTD_ANSWER;k++)
+		fprintf(stdout,"%d",game.secret[k]);
+	fprintf(stdout,"\n");
+	for(i=0;i<POP_SIZE;i++)
 	{
-		hits = 0;
-		fprintf(stdout,"%d >", i);
-		fscanf(stdin, "%d %d %d %d", &guess[0], &guess[1], &guess[2], &guess[3]);
-		GAME_CHECK(add_guess(&game, guess, peg_results));
-		fprintf(stdout,"   ");
-		for(j=0;j<QTD_ANSWER;j++)
+		fprintf(stdout,"Individual %04d\n",i);
+		for(j=0;j<MAX_MOVES;j++)
 		{
-			fprintf(stdout,"%d ", peg_results[j]);
-			if(peg_results[j] == 2)
-				hits++;
+			hits = 0;
+			guess = pop[i].strategy[j];
+			for(k=0;k<QTD_ANSWER;k++)
+				fprintf(stdout,"%d", guess[k]);
+
+			GAME_CHECK(add_guess(&game,guess,peg_results));
+			fprintf(stdout,"(");
+			for(k=0;k<QTD_ANSWER;k++)
+			{
+				fprintf(stdout,"%d", peg_results[k]);
+				if(peg_results[k] == 2)
+					hits++;
+			}
+			fprintf(stdout,")");
+			if(hits==QTD_ANSWER)
+			{
+				fprintf(stdout,"Found in %d moves. [",j);
+				for(k=0;k<QTD_ANSWER;k++)
+					fprintf(stdout,"%d ",game.secret[k]);
+				fprintf(stdout,"]\n");
+				break;
+			}
+			fprintf(stdout,"\n");
 		}
 		fprintf(stdout,"\n");
-		if(hits == QTD_ANSWER)
-		{
-			fprintf(stdout,"Congratulations!\n");
-			break;
-		}
+		GAME_CHECK(reset_guesses(&game));
 	}
-	fprintf(stdout,"All guesses:\n");
-	for(i=0;i<MAX_MOVES;i++)
-	{
-		for(j=0;j<QTD_ANSWER;j++)
-			fprintf(stdout,"%d ",game.guesses[i][j]);
-		fprintf(stdout,"(");
-		for(j=0;j<QTD_ANSWER;j++)
-			fprintf(stdout,"%d ",game.results[i][j]);
-		fprintf(stdout,")\n");
-	}
-	fprintf(stdout, "Secret: ");
-	for(i=0;i<QTD_ANSWER;i++)
-		fprintf(stdout,"%d ", game.secret[i]);
-	fprintf(stdout,"\n");
-
+	if(pop != NULL)
+		free(pop);
 	return EXIT_SUCCESS;
 }

@@ -35,6 +35,7 @@ void print_game_error(game_error_t error);
 
 game_error_t initialize_board(game_board *board);
 game_error_t add_guess(game_board *board, unsigned int guess[QTD_ANSWER], unsigned int peg_results[QTD_ANSWER]);
+game_error_t reset_guesses(game_board *board);
 
 
 

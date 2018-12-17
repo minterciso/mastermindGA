@@ -23,7 +23,6 @@ game_error_t initialize_board(game_board *board)
 	int i,j;
 	if(board == NULL)
 		return invalid_board;
-	srand(time(NULL));
 	board->guess = 0;
 	for(i=0;i<QTD_ANSWER;i++)
 		board->secret[i] = rand() % QTD_PEGS;
@@ -90,5 +89,15 @@ game_error_t add_guess(game_board *board, unsigned int guess[QTD_ANSWER], unsign
 	}
 	memcpy(board->results[board->guess], peg_results, sizeof(unsigned int)*QTD_ANSWER);
 	board->guess++;
+	return game_success;
+}
+
+game_error_t reset_guesses(game_board *board)
+{
+	if(board==NULL)
+		return invalid_board;
+	board->guess=0;
+	memset(board->guesses, 0, sizeof(unsigned int)*(MAX_MOVES*QTD_ANSWER));
+	memset(board->results, 0, sizeof(unsigned int)*(MAX_MOVES*QTD_ANSWER));
 	return game_success;
 }
