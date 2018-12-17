@@ -8,19 +8,19 @@
 
 individual* create_population(void)
 {
-	int i,j,k;
-	individual *pop = NULL;
-	size_t pop_bytes = sizeof(individual)*POP_SIZE;
+    int i,j,k;
+    individual *pop = NULL;
+    size_t pop_bytes = sizeof(individual)*POP_SIZE;
 
-	if((pop=(individual*)malloc(pop_bytes))==NULL)
-	{
-		perror("malloc");
-		return NULL;
-	}
-	memset(pop, '\0', pop_bytes);
-	for(i=0;i<POP_SIZE;i++)
-		for(j=0;j<MAX_MOVES;j++)
-			for(k=0;k<QTD_ANSWER;k++)
-				pop[i].strategy[j][k] = rand() % QTD_PEGS;
-	return pop;
+    if((pop=(individual*)malloc(pop_bytes))==NULL)
+    {
+        perror("malloc");
+        return NULL;
+    }
+    memset(pop, '\0', pop_bytes);
+    for(i=0;i<POP_SIZE;i++)
+        for(j=0;j<MAX_MOVES;j++)
+            for(k=0;k<QTD_ANSWER;k++)
+                pop[i].strategy[j][k] = rand() % QTD_PEGS;
+    return pop;
 }

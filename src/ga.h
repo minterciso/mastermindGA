@@ -5,8 +5,8 @@
 
 typedef struct
 {
-	float fitness;
-	unsigned int strategy[MAX_MOVES][QTD_ANSWER];
+    float fitness;
+    unsigned int strategy[MAX_MOVES][QTD_ANSWER];
 } individual;
 
 individual* create_population(void);
