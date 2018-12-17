@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -DDEBUG
+AM_CPPFLAGS = 
 AM_CFLAGS = -O0 \
             -ggdb \
             -g3 \

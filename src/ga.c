@@ -44,3 +44,4 @@ void fitness(individual *pop)
     for(i=0;i<POP_SIZE;i++)
         pop[i].fitness = pop[i].fitness/sumFitness;
 }
+
