@@ -84,6 +84,7 @@ int main(int argc, char *argv[])
     }
     fitness(pop);
     qsort(pop,POP_SIZE, sizeof(individual), cmpind);
+    crossover_and_mutate(pop, elite_only);
     for(i=0;i<POP_SIZE;i++)
         fprintf(stdout,"Individual %d: %f\n",i, pop[i].fitness);
     if(pop != NULL)
