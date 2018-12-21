@@ -77,8 +77,11 @@ void crossover_and_mutate(individual *pop, selection_type type)
         s1 = &pop[i];
         s2 = &pop[i+1];
         // copy the moves from the parents, and swap 2 distinct moves beetween the parents, for each movement
-        memcpy(&s1->moves, &p1->moves, sizeof(unsigned int)*MAX_MOVES*QTD_ANSWER);
-        memcpy(&s2->moves, &p2->moves, sizeof(unsigned int)*MAX_MOVES*QTD_ANSWER);
+        //memcpy(s1->strategy, p1->strategy, sizeof(unsigned int)*MAX_MOVES*QTD_ANSWER);
+        //memcpy(s2->strategy, p2->strategy, sizeof(unsigned int)*MAX_MOVES*QTD_ANSWER);
+        memcpy(s1, p1, sizeof(individual));
+        memcpy(s2, p2, sizeof(individual));
+        s1->fitness = 0.0;
         for(j=0;j<MAX_MOVES;j++){
             move1_idx = rand() % QTD_ANSWER;
             move2_idx = rand() % QTD_ANSWER;

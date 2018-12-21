@@ -7,5 +7,5 @@
 #define MAX_MOVES 10
 #define QTD_PEGS 6
 #define QTD_ANSWER 4
-
+#define MAX_GENERATIONS 100
 #endif //__CONSTS_H
