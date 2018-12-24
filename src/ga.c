@@ -49,8 +49,9 @@ void fitness(individual *pop)
     // guess. For instance, if it took 4 guesses to find the result, the fitness of that specific board game will be 1/4, or 0.25
 
     // Create the games
-    game_board games[100];
-    for(int j=0;j<100;j++)
+    int amount_of_games = 100;
+    game_board games[amount_of_games];
+    for(int j=0;j<amount_of_games;j++)
         GAME_CHECK(initialize_board(&games[j]));
 
     int r=2;
@@ -59,7 +60,7 @@ void fitness(individual *pop)
     for(int i=0;i<POP_SIZE;i++)
     {
         char *rule = pop[i].rule;
-        for(int j=0;j<100;j++)
+        for(int j=0;j<amount_of_games;j++)
         {
             char *lattice = NULL;
             // Create initial lattice
@@ -88,7 +89,9 @@ void fitness(individual *pop)
             pop[i].fitness += 1/pop[i].moves;
             free(lattice);
         }
-        pop[i].fitness /= 100;
+        pop[i].fitness /= amount_of_games;
+        if(pop[i].fitness == 0.0)
+            pop[i].fitness = 0.00000000001;
     }
 }
 

@@ -63,25 +63,41 @@ int main(int argc, char *argv[])
     fflush(stdout);
 
     print_population(pop);
+    FILE *fp = NULL;
+    if((fp = fopen("output.csv", "w"))==NULL)
+    {
+        perror("fopen");
+        destroy_population(pop);
+        return EXIT_FAILURE;
+    }
 
-    fprintf(stdout,"[*] Calcullating fitness...");
-    fflush(stdout);
-    fitness(pop);
-    fprintf(stdout,"[OK]\n");
-    fflush(stdout);
+    for(int g=0;g<MAX_GENERATIONS;g++)
+    {
+        fprintf(stdout,"[*] Generation %03d ",g);
+        fprintf(stdout,".");
+        fitness(pop);
 
-    fprintf(stdout,"[*] Sorting...");
-    fflush(stdout);
-    qsort(pop, POP_SIZE, sizeof(individual), cmpind);
-    fprintf(stdout,"[OK]\n");
-    best = &pop[0];
-    fprintf(stdout,"[*] Best Fitness: %.10f\n", best->fitness);
+        fprintf(stdout,".");
+        qsort(pop, POP_SIZE, sizeof(individual), cmpind);
 
-    fprintf(stdout,"[*] Crossing and mutating...");
-    fflush(stdout);
-    crossover_and_mutate(pop, elite_only);
-    fprintf(stdout,"[OK]\n");
-    fflush(stdout);
+        fprintf(stdout,".");
+        float tot_fitness = 0.0;
+        for(int i=0;i<POP_SIZE;i++)
+            tot_fitness += pop[i].fitness;
+        for(int i=0;i<POP_SIZE;i++)
+            pop[i].fitness /= tot_fitness;
+        fflush(stdout);
+
+        best = &pop[0];
+        fprintf(stdout,": %.10f", best->fitness);
+        fprintf(fp, "%d,%.10f\n",g,best->fitness);
+
+        crossover_and_mutate(pop, elite_only);
+        fprintf(stdout," [OK]\n");
+        fflush(stdout);
+    }
+    fclose(fp);
+
     print_population(pop);
 
     /*
