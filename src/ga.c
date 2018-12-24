@@ -89,7 +89,7 @@ void fitness(individual *pop)
                         hits++;
                     }
                 }
-                pop[i].fitness *= (float)hits;
+                //pop[i].fitness *= (float)hits;
                 if(hits==QTD_ANSWER)
                     break;
                 // Execute one step of the CA

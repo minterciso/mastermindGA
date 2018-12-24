@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
         for(int k=0;k<QTD_ANSWER;k++) guess[k] = (int)lattice[k];
         fprintf(stdout,"[*] Guess: ");
         for(int k=0;k<QTD_ANSWER;k++) fprintf(stdout,"%d", guess[k]);
-        fprintf(stdout,"\n");
+
         GAME_CHECK(add_guess(&game, guess, results));
         int hits = 0;
         for(int k=0;k<QTD_ANSWER;k++)
@@ -126,6 +126,7 @@ int main(int argc, char *argv[])
                 hits++;
             }
         }
+        fprintf(stdout, "(%d)\n", hits);
         if(hits==QTD_ANSWER)
         {
             fprintf(stdout,"[*] Got the result in %d moves!\n", i);
