@@ -18,6 +18,7 @@ typedef enum selection_type
 } selection_type;
 
 individual* create_population(void);
+void destroy_population(individual *pop);
 void fitness(individual *pop);
 void crossover_and_mutate(individual *pop, selection_type type);
 int select_individual(individual *pop, selection_type type);

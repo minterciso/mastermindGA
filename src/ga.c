@@ -32,6 +32,16 @@ individual* create_population(void)
     return pop;
 }
 
+void destroy_population(individual *pop)
+{
+    for(int i=0;i<POP_SIZE;i++)
+    {
+        if(pop[i].rule != NULL)
+            free(pop[i].rule);
+    }
+    free(pop);
+}
+
 void fitness(individual *pop)
 {
     // The fitness function will create 100 games and execute the CA for each individual on THAT specific rule for MAX_MOVES steps.
@@ -84,8 +94,55 @@ void fitness(individual *pop)
 
 int select_individual(individual *pop, selection_type type)
 {
+    int idx = 0;
+    if(type == elite_only)
+        idx = rand() % KEEP_POP;
+    return idx;
 }
 
 void crossover_and_mutate(individual *pop, selection_type type)
 {
+    if(type == elite_only)
+    {
+        // Keep only KEEP_POP individuals, and reset the others
+        for(int i=KEEP_POP; i<POP_SIZE; i++)
+        {
+            //free(pop[i].rule);
+            //memset(&pop[i].rule, '0', pop[i].ruleSize*sizeof(char));
+            pop[i].fitness=0.0;
+            pop[i].moves=0;
+        }
+    }
+    // Now create new individuals
+    for(int i=KEEP_POP; i<POP_SIZE; i+=2)
+    {
+        int p1_idx,p2_idx;
+        individual *p1, *p2, *s1, *s2;
+        p1_idx = select_individual(pop, type);
+        p2_idx = select_individual(pop, type);
+        p1 = &pop[p1_idx];
+        p2 = &pop[p2_idx];
+        s1 = &pop[i];
+        s2 = &pop[i+1];
+        int ruleSize = p1->ruleSize;
+        // Allocate rule size on sons
+        // Select random point for crossover
+        int xp = rand() % ruleSize;
+        strncpy(s1->rule, p1->rule, xp);
+        strncpy(s2->rule, p2->rule, xp);
+        strncpy(&s1->rule[xp], &p2->rule[xp], ruleSize-xp);
+        strncpy(&s2->rule[xp], &p1->rule[xp], ruleSize-xp);
+
+        // Now mutate
+        float rnd = 0.0;
+        for(int j=0;j<ruleSize;j++)
+        {
+            rnd = (float)rand()/(float)(RAND_MAX);
+            if(rnd < PROB_MUTATION)
+                s1->rule[j] = rand() % QTD_PEGS;
+            rnd = (float)rand()/(float)(RAND_MAX);
+            if(rnd < PROB_MUTATION)
+                s2->rule[j] = rand() % QTD_PEGS;
+        }
+    }
 }

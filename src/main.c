@@ -42,6 +42,7 @@ void print_population(individual *pop)
 int main(int argc, char *argv[])
 {
     individual *pop = NULL;
+    individual *best = NULL;
 
     // Start the PRNG
     fprintf(stdout,"[*] Starting PRNG...");
@@ -73,10 +74,22 @@ int main(int argc, char *argv[])
     fflush(stdout);
     qsort(pop, POP_SIZE, sizeof(individual), cmpind);
     fprintf(stdout,"[OK]\n");
+    best = &pop[0];
+    fprintf(stdout,"[*] Best Fitness: %.10f\n", best->fitness);
 
+    fprintf(stdout,"[*] Crossing and mutating...");
+    fflush(stdout);
+    crossover_and_mutate(pop, elite_only);
+    fprintf(stdout,"[OK]\n");
+    fflush(stdout);
+    print_population(pop);
+
+    /*
     for(int i=0;i<POP_SIZE; i++)
         fprintf(stdout,"%d: %0.10f\n", i,pop[i].fitness);
+*/
 
-    free(pop);
+    fprintf(stdout,"[*] Freeing population memory\n");
+    destroy_population(pop);
     return EXIT_SUCCESS;
 }
