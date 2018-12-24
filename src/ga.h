@@ -7,8 +7,8 @@ typedef struct
 {
     float fitness;
     int moves;
-    unsigned int strategy[MAX_MOVES][QTD_ANSWER];
-    unsigned int results[MAX_MOVES][QTD_ANSWER];
+    char *rule;
+    double ruleSize;
 } individual;
 
 typedef enum selection_type

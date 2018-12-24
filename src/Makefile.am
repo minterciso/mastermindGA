@@ -1,4 +1,4 @@
-AM_CPPFLAGS = 
+AM_CPPFLAGS =
 AM_CFLAGS = -O0 \
             -ggdb \
             -g3 \
@@ -7,6 +7,8 @@ AM_CFLAGS = -O0 \
 bin_PROGRAMS = mastermindGA
 
 mastermindGA_SOURCES = main.c \
+			ca.h ca.c \
+			utils.h utils.c \
 			   ga.c ga.h \
 			   game.c game.h \
 			   consts.h 

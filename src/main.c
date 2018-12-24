@@ -6,6 +6,7 @@
 
 #include "game.h"
 #include "ga.h"
+#include "ca.h"
 
 static int cmpind(const void *p1, const void *p2)
 {
@@ -26,95 +27,42 @@ void debug(const char *fmt, ...)
 #endif
 }
 
+void print_population(individual *pop)
+{
+#ifdef DEBUG
+    for(int i=0;i<POP_SIZE;i++)
+    {
+        fprintf(stdout, "[**] Individual %d:", i);
+        for(int j=0;j<pop[i].ruleSize;j++)
+            fprintf(stdout, "%d", pop[i].rule[j]);
+        fprintf(stdout,"(%.10f)\n", pop[i].fitness);
+    }
+#endif
+}
+
 int main(int argc, char *argv[])
 {
-    int i,j,k,g;
-    game_board game;
     individual *pop = NULL;
-    individual *best = NULL;
 
-    srand(time(NULL));
-    pop = create_population();
-    GAME_CHECK(initialize_board(&game));
-    unsigned int hits = 0;
-    unsigned int peg_results[QTD_ANSWER];
-    unsigned int *guess = NULL;
-    unsigned int tmp_strategy[QTD_ANSWER];
-#ifdef DEBUG
-    debug("Secret: ");
-    for(k=0;k<QTD_ANSWER;k++)
-        debug("%d",game.secret[k]);
-    debug("\n");
-#endif
-    for(g=0;g<MAX_GENERATIONS;g++)
+    // Start the PRNG
+    fprintf(stdout,"[*] Starting PRNG...");
+    fflush(stdout);
+    start_prng();
+    fprintf(stdout,"[OK]\n");
+    fflush(stdout);
+
+    // Create random population
+    fprintf(stdout,"[*] Creating random population...");
+    fflush(stdout);
+    if((pop=create_population())==NULL)
     {
-        for(i=0;i<POP_SIZE;i++)
-        {
-            debug("Individual %04d\n",i);
-            for(j=0;j<MAX_MOVES;j++)
-            {
-                hits = 0;
-                guess = pop[i].strategy[j];
-    #ifdef DEBUG
-                for(k=0;k<QTD_ANSWER;k++)
-                    fprintf(stdout,"%d", guess[k]);
-    #endif
-                // Save the guess before executing it
-                memcpy(tmp_strategy, guess, sizeof(unsigned int)*QTD_ANSWER);
-                GAME_CHECK(add_guess(&game,guess,peg_results));
-                // Restore the guess (the correct pegs are changed to 9999
-                memcpy(guess, tmp_strategy, sizeof(unsigned int)*QTD_ANSWER);
-                memcpy(pop[i].results[j], &peg_results, sizeof(unsigned int)*QTD_ANSWER);
-                debug("(");
-                for(k=0;k<QTD_ANSWER;k++)
-                {
-                    debug("%d", peg_results[k]);
-                    if(peg_results[k] == 2)
-                        hits++;
-                }
-                debug(")");
-                if(hits==QTD_ANSWER)
-                {
-                    pop[i].moves = j;
-    #ifdef DEBUG
-                    fprintf(stdout,"Found in %d moves. [",j);
-                    for(k=0;k<QTD_ANSWER;k++)
-                        fprintf(stdout,"%d ",game.secret[k]);
-                    fprintf(stdout,"]\n");
-    #endif
-                    break;
-                }
-                pop[i].moves = j;
-                debug("\n");
-            }
-            debug("\n");
-            GAME_CHECK(reset_guesses(&game));
-        }
-        fitness(pop);
-        qsort(pop,POP_SIZE, sizeof(individual), cmpind);
-        best = &pop[0];
-        fprintf(stdout, "Generation %03d: %0.10f\n", g, best->fitness);
-        crossover_and_mutate(pop, elite_only);
+        fprintf(stderr, "Unable to create population\n");
+        return EXIT_FAILURE;
     }
-    // Best strategy
-    fprintf(stdout,"Secret: ");
-    for(i=0;i<QTD_ANSWER;i++)
-        fprintf(stdout,"%d",game.secret[i]);
-    fprintf(stdout,"\n");
-    fprintf(stdout,"Best Fitness: %0.10f\n", best->fitness);
-    fprintf(stdout,"Strategy:\n");
-    for(i=0;i<MAX_MOVES;i++)
-    {
-        fprintf(stdout,"Move %d:", i);
-        for(j=0;j<QTD_ANSWER;j++)
-            fprintf(stdout,"%d", best->strategy[i][j]);
-        fprintf(stdout,"\n");
-    }
-#ifdef DEBUG
-    for(i=0;i<POP_SIZE;i++)
-        fprintf(stdout,"Individual %d: %f\n",i, pop[i].fitness);
-#endif
-    if(pop != NULL)
-        free(pop);
+    fprintf(stdout,"[OK]\n");
+    fflush(stdout);
+
+    print_population(pop);
+
     return EXIT_SUCCESS;
 }

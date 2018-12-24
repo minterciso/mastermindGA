@@ -11,6 +11,7 @@ AC_CONFIG_HEADERS([config.h])
 AC_PROG_CC
 
 # Checks for libraries.
+AC_CHECK_LIB([m], [pow])
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdlib.h])
