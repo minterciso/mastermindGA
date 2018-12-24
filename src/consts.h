@@ -3,9 +3,9 @@
 
 #define POP_SIZE 500
 #define KEEP_POP POP_SIZE * 0.2
-#define PROB_MUTATION 0.005
-#define MAX_MOVES 10
+#define PROB_MUTATION 0.02
+#define MAX_MOVES 15
 #define QTD_PEGS 6
 #define QTD_ANSWER 4
-#define MAX_GENERATIONS 1000
+#define MAX_GENERATIONS 100
 #endif //__CONSTS_H

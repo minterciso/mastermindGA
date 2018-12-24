@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdarg.h>
 
+#include "game.h"
 #include "ga.h"
 #include "ca.h"
 
@@ -96,14 +97,44 @@ int main(int argc, char *argv[])
         fprintf(stdout," [OK]\n");
         fflush(stdout);
     }
+    fprintf(stdout,"[*] Best Rule: ");
+    for(int i=0;i<best->ruleSize;i++)
+        fprintf(stdout,"%d", best->rule[i]);
+    fprintf(stdout,"\n");
+    fprintf(stdout,"[*] Sample game\n");
+    game_board game;
+    char *lattice = NULL;
+    unsigned int guess[QTD_ANSWER];
+    unsigned int results[QTD_ANSWER];
+
+    GAME_CHECK(initialize_board(&game));
+    fprintf(stdout,"[*] Secret: ");
+    for(int i=0;i<QTD_ANSWER;i++) fprintf(stdout,"%d", game.secret[i]);
+    fprintf(stdout,"\n");
+    lattice = create_initial_lattice(QTD_ANSWER, QTD_PEGS);
+    for(int i=0;i<MAX_MOVES;i++)
+    {
+        for(int k=0;k<QTD_ANSWER;k++) guess[k] = (int)lattice[k];
+        fprintf(stdout,"[*] Guess: ");
+        for(int k=0;k<QTD_ANSWER;k++) fprintf(stdout,"%d", guess[k]);
+        fprintf(stdout,"\n");
+        GAME_CHECK(add_guess(&game, guess, results));
+        int hits = 0;
+        for(int k=0;k<QTD_ANSWER;k++)
+        {
+            if(results[k]==2){
+                hits++;
+            }
+        }
+        if(hits==QTD_ANSWER)
+        {
+            fprintf(stdout,"[*] Got the result in %d moves!\n", i);
+            break;
+        }
+        lattice = execute_ca(lattice, QTD_ANSWER, best->rule, best->ruleSize, 1, QTD_PEGS, 1);
+    }
+    free(lattice);
     fclose(fp);
-
-    print_population(pop);
-
-    /*
-    for(int i=0;i<POP_SIZE; i++)
-        fprintf(stdout,"%d: %0.10f\n", i,pop[i].fitness);
-*/
 
     fprintf(stdout,"[*] Freeing population memory\n");
     destroy_population(pop);

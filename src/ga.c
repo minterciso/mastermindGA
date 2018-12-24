@@ -12,7 +12,7 @@ individual* create_population(void)
 {
     individual *pop = NULL;
     size_t popBytes = sizeof(individual)*POP_SIZE;
-    int k=QTD_PEGS, r=2;
+    int k=QTD_PEGS, r=1;
 
     if((pop=(individual*)malloc(popBytes))==NULL)
     {
@@ -51,28 +51,29 @@ void fitness(individual *pop)
     // Create the games
     int amount_of_games = 100;
     game_board games[amount_of_games];
-    for(int j=0;j<amount_of_games;j++)
-        GAME_CHECK(initialize_board(&games[j]));
 
-    int r=2;
+    int r=1;
     int k=QTD_PEGS;
+    int circular = 1;
 
     for(int i=0;i<POP_SIZE;i++)
     {
+        pop[i].fitness = 0.0;
+        memset(&games, '\0', sizeof(game_board)*amount_of_games);
+        for(int j=0;j<amount_of_games;j++)
+            GAME_CHECK(initialize_board(&games[j]));
         char *rule = pop[i].rule;
         for(int j=0;j<amount_of_games;j++)
         {
             char *lattice = NULL;
             // Create initial lattice
             lattice = create_initial_lattice(QTD_ANSWER, k);
-            pop[i].moves = 0;
-            games[j].guess=0;
+            pop[i].moves   = 0;
+            games[j].guess = 0;
             for(int m=0;m<MAX_MOVES;m++)
             {
                 pop[i].moves++;
-                // Execute one step of the CA
-                lattice = execute_ca(lattice, QTD_ANSWER, rule, pop[i].ruleSize, r, k, 0);
-                // Translate back from lattice to guess
+                // Check how good the lattice is related to the secret code
                 unsigned int guess[QTD_ANSWER];
                 for(int k=0;k<QTD_ANSWER;k++) guess[k] = (int)lattice[k];
                 // See if we have a valid result
@@ -81,17 +82,24 @@ void fitness(individual *pop)
                 int hits = 0;
                 for(int k=0;k<QTD_ANSWER;k++)
                 {
-                    if(results[k]==2) hits++;
+                    pop[i].fitness += (float)results[k];
+                    //pop[i].fitness += ((float)pop[i].fitness * (float)results[k]);
+                    if(results[k]==2){
+                        //pop[i].fitness += 2.0;
+                        hits++;
+                    }
                 }
+                pop[i].fitness *= (float)hits;
                 if(hits==QTD_ANSWER)
                     break;
+                // Execute one step of the CA
+                lattice = execute_ca(lattice, QTD_ANSWER, rule, pop[i].ruleSize, r, k, circular);
             }
-            pop[i].fitness += 1/pop[i].moves;
+            if(pop[i].moves>0)
+                pop[i].fitness *= (1.0/(float)pop[i].moves);
             free(lattice);
         }
-        pop[i].fitness /= amount_of_games;
-        if(pop[i].fitness == 0.0)
-            pop[i].fitness = 0.00000000001;
+        //pop[i].fitness /= amount_of_games;
     }
 }
 
@@ -131,11 +139,16 @@ void crossover_and_mutate(individual *pop, selection_type type)
         // Allocate rule size on sons
         // Select random point for crossover
         int xp = rand() % ruleSize;
-        strncpy(s1->rule, p1->rule, xp);
-        strncpy(s2->rule, p2->rule, xp);
-        strncpy(&s1->rule[xp], &p2->rule[xp], ruleSize-xp);
-        strncpy(&s2->rule[xp], &p1->rule[xp], ruleSize-xp);
-
+        for(int j=0;j<xp;j++)
+        {
+            s1->rule[j] = p1->rule[j];
+            s2->rule[j] = p2->rule[j];
+        }
+        for(int j=xp;j<ruleSize;j++)
+        {
+            s1->rule[j] = p2->rule[j];
+            s2->rule[j] = p1->rule[j];
+        }
         // Now mutate
         float rnd = 0.0;
         for(int j=0;j<ruleSize;j++)
