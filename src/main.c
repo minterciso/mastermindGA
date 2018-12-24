@@ -4,7 +4,6 @@
 #include <string.h>
 #include <stdarg.h>
 
-#include "game.h"
 #include "ga.h"
 #include "ca.h"
 
@@ -64,5 +63,20 @@ int main(int argc, char *argv[])
 
     print_population(pop);
 
+    fprintf(stdout,"[*] Calcullating fitness...");
+    fflush(stdout);
+    fitness(pop);
+    fprintf(stdout,"[OK]\n");
+    fflush(stdout);
+
+    fprintf(stdout,"[*] Sorting...");
+    fflush(stdout);
+    qsort(pop, POP_SIZE, sizeof(individual), cmpind);
+    fprintf(stdout,"[OK]\n");
+
+    for(int i=0;i<POP_SIZE; i++)
+        fprintf(stdout,"%d: %0.10f\n", i,pop[i].fitness);
+
+    free(pop);
     return EXIT_SUCCESS;
 }
