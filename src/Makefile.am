@@ -1,6 +1,5 @@
 AM_CPPFLAGS =
-AM_CFLAGS = -O0 \
-            -ggdb \
+AM_CFLAGS = -ggdb \
             -g3 \
             -Wall
 

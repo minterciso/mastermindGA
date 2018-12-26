@@ -135,12 +135,20 @@ int select_individual(individual *pop, selection_type type)
     int idx = 0;
     if(type == elite_only)
         idx = rand() % KEEP_POP;
+    if(type == tournament)
+    {
+        int p1_idx = rand() % POP_SIZE;
+        int p2_idx = rand() % POP_SIZE;
+        if(pop[p1_idx].fitness > pop[p2_idx].fitness)
+            return p1_idx;
+        return p2_idx;
+    }
     return idx;
 }
 
 void crossover_and_mutate(individual *pop, selection_type type)
 {
-    if(type == elite_only)
+    if(type == elite_only || type == tournament)
     {
         // Keep only KEEP_POP individuals, and reset the others
         for(int i=KEEP_POP; i<POP_SIZE; i++)
@@ -164,11 +172,13 @@ void crossover_and_mutate(individual *pop, selection_type type)
         int ruleSize = p1->ruleSize;
         // Allocate rule size on sons
         // Select random point for crossover
+        /*
         int xp = rand() % ruleSize;
         memcpy(s1->rule, p1->rule, sizeof(unsigned int)*xp);
         memcpy(s2->rule, p2->rule, sizeof(unsigned int)*xp);
         memcpy(&s1->rule[xp], &p2->rule[xp], sizeof(unsigned int)*(ruleSize-xp));
         memcpy(&s2->rule[xp], &p1->rule[xp], sizeof(unsigned int)*(ruleSize-xp));
+        */
         // Now mutate
         float rnd = 0.0;
         for(int j=0;j<ruleSize;j++)

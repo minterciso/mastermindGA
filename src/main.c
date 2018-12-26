@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
         fprintf(stdout,": %.10f", best->fitness);
         fprintf(fp, "%d,%.10f\n",g,best->fitness);
 
-        crossover_and_mutate(pop, elite_only);
+        crossover_and_mutate(pop, tournament);
         fprintf(stdout," [OK]\n");
         fflush(stdout);
     }
