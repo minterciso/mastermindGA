@@ -71,6 +71,8 @@ int main(int argc, char *argv[])
         destroy_population(pop);
         return EXIT_FAILURE;
     }
+    fprintf(fp,"generation, fitness, rule\n");
+    fflush(fp);
 
     for(int g=0;g<MAX_GENERATIONS;g++)
     {
@@ -91,7 +93,10 @@ int main(int argc, char *argv[])
 
         best = &pop[0];
         fprintf(stdout,": %.10f", best->fitness);
-        fprintf(fp, "%d,%.10f\n",g,best->fitness);
+        fprintf(fp, "%d,%.10f,",g,best->fitness);
+	for(int i=0;i<best->ruleSize;i++) fprintf(fp, "%d", best->rule[i]);
+	fprintf(fp, "\n");
+	fflush(fp);
 
         crossover_and_mutate(pop, tournament);
         fprintf(stdout," [OK]\n");
