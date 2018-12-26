@@ -7,7 +7,7 @@ typedef struct
 {
     float fitness;
     int moves;
-    char *rule;
+    unsigned int *rule;
     double ruleSize;
 } individual;
 
@@ -17,6 +17,7 @@ typedef enum selection_type
     elite_only
 } selection_type;
 
+int individual_exists(individual *pop, individual *ind);
 individual* create_population(void);
 void destroy_population(individual *pop);
 void fitness(individual *pop);

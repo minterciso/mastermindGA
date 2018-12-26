@@ -4,12 +4,11 @@
 
 #include "utils.h"
 
-int to_decimal(char *str, int base, int len)
+int to_decimal(unsigned int *str, int base, int len)
 {
     int power = 1; // Initialize power of base
     int num = 0;  // Initialize result
     int i;
-    char ch;
 
     // Decimal equivalent is str[len-1]*1 +
     // str[len-1]*base + str[len-1]*(base^2) + ...
@@ -17,15 +16,13 @@ int to_decimal(char *str, int base, int len)
     {
         // A digit in input number must be
         // less than number's base
-        ch = str[i];
-        int num_=(int)ch;
-        if (num_ >= base)
+        if (str[i] >= base)
         {
             printf("Invalid Number");
             return -1;
         }
 
-        num += num_ * power;
+        num += str[i] * power;
         power = power * base;
     }
 

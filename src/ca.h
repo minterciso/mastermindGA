@@ -22,7 +22,7 @@ void start_prng(void);
  * @param ruleSize A pointer to a double variable that'll store the rule size
  * @return An array with the rule result as a char
  */
-char *create_random_rule(unsigned int k, unsigned int r, double *ruleSize);
+unsigned int *create_random_rule(unsigned int k, unsigned int r, double *ruleSize);
 
 /**
  * @brief Create a random initial lattice of size size and colors k
@@ -30,7 +30,7 @@ char *create_random_rule(unsigned int k, unsigned int r, double *ruleSize);
  * @param k The amount of colors of the lattice
  * @return A pointer to an array with the lattices
  */
-char *create_initial_lattice(unsigned int size, unsigned int k);
+unsigned int *create_initial_lattice(unsigned int size, unsigned int k);
 
 /**
  * @brief Execute the CA for one step
@@ -46,6 +46,6 @@ char *create_initial_lattice(unsigned int size, unsigned int k);
  * @param circular If we should treat the lattice as a circular lattice
  * @return The lattice with the CA already executed
  */
-char *execute_ca(char *lattice, size_t lat_size, char *rule, double rule_size, int r, unsigned int k, int circular);
+unsigned int *execute_ca(unsigned int *lattice, size_t lat_size, unsigned int *rule, double rule_size, int r, unsigned int k, int circular);
 
 #endif // CA_H

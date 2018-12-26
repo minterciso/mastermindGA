@@ -101,9 +101,11 @@ int main(int argc, char *argv[])
     for(int i=0;i<best->ruleSize;i++)
         fprintf(stdout,"%d", best->rule[i]);
     fprintf(stdout,"\n");
+
     fprintf(stdout,"[*] Sample game\n");
+    fflush(stdout);
     game_board game;
-    char *lattice = NULL;
+    unsigned int *lattice = NULL;
     unsigned int guess[QTD_ANSWER];
     unsigned int results[QTD_ANSWER];
 
@@ -111,10 +113,14 @@ int main(int argc, char *argv[])
     fprintf(stdout,"[*] Secret: ");
     for(int i=0;i<QTD_ANSWER;i++) fprintf(stdout,"%d", game.secret[i]);
     fprintf(stdout,"\n");
+    fflush(stdout);
     lattice = create_initial_lattice(QTD_ANSWER, QTD_PEGS);
     for(int i=0;i<MAX_MOVES;i++)
     {
-        for(int k=0;k<QTD_ANSWER;k++) guess[k] = (int)lattice[k];
+        memset(guess, 0, sizeof(unsigned int)*QTD_ANSWER);
+        memset(results, 0, sizeof(unsigned int)*QTD_ANSWER);
+        memcpy(&guess, lattice, sizeof(unsigned int)*QTD_ANSWER);
+        //for(int k=0;k<QTD_ANSWER;k++) guess[k] = lattice[k];
         fprintf(stdout,"[*] Guess: ");
         for(int k=0;k<QTD_ANSWER;k++) fprintf(stdout,"%d", guess[k]);
 
