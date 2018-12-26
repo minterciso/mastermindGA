@@ -79,14 +79,14 @@ int main(int argc, char *argv[])
         fitness(pop);
 
         fprintf(stdout,".");
-        qsort(pop, POP_SIZE, sizeof(individual), cmpind);
-
-        fprintf(stdout,".");
         float tot_fitness = 0.0;
         for(int i=0;i<POP_SIZE;i++)
             tot_fitness += pop[i].fitness;
         for(int i=0;i<POP_SIZE;i++)
             pop[i].fitness /= tot_fitness;
+
+        fprintf(stdout,".");
+        qsort(pop, POP_SIZE, sizeof(individual), cmpind);
         fflush(stdout);
 
         best = &pop[0];

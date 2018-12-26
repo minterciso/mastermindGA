@@ -172,13 +172,11 @@ void crossover_and_mutate(individual *pop, selection_type type)
         int ruleSize = p1->ruleSize;
         // Allocate rule size on sons
         // Select random point for crossover
-        /*
         int xp = rand() % ruleSize;
         memcpy(s1->rule, p1->rule, sizeof(unsigned int)*xp);
         memcpy(s2->rule, p2->rule, sizeof(unsigned int)*xp);
         memcpy(&s1->rule[xp], &p2->rule[xp], sizeof(unsigned int)*(ruleSize-xp));
         memcpy(&s2->rule[xp], &p1->rule[xp], sizeof(unsigned int)*(ruleSize-xp));
-        */
         // Now mutate
         float rnd = 0.0;
         for(int j=0;j<ruleSize;j++)
